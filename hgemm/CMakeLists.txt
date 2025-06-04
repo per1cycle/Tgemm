@@ -1,4 +1,4 @@
 include_directories(
 )
 
-add_executable(sgemm main.cu)
+add_executable(hgemm main.cu)

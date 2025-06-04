@@ -1,10 +1,11 @@
+#include <cuda_fp16.h>
 /**
  * In the naive implementation, the grid has 2 dim, and the block also have two dim
  */
 template<
 	const uint BM,
 	const uint BN, 
-	const uint BK,
+	const uint BK
 >
 __global__ void v1(uint M, uint N, uint K, half *a, half *b, half *c)
 {

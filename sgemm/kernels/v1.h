@@ -4,9 +4,9 @@
 template<
 	const uint BM,
 	const uint BN, 
-	const uint BK,
+	const uint BK
 >
-__global__ void v1(uint M, uint N, uint K, half *a, half *b, half *c)
+__global__ void v1(uint M, uint N, uint K, float *a, float *b, float *c)
 {
 	int tx = threadIdx.x, ty = threadIdx.y;
 	int x = tx + blockIdx.x * BM;
