@@ -5,3 +5,6 @@
 *.cubin
 *.fatbin
 build/*
+*.py
+.vscode/
+*.swp

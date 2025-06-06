@@ -23,4 +23,6 @@ void run_v1(uint M, uint N, uint K, float *a, float *b, float *c)
     constexpr int BM = 16, BN = 16, BK = 8;
 	dim3 grid_dim = {M / BM, N / BN, 1};
     dim3 block_dim = {BM, BN, 1};
+
+	v1<BM, BN, BK><<<grid_dim, block_dim>>>(M, N, K, a, b, c);
 }

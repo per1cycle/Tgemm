@@ -1,0 +1,2 @@
+#! /usr/bin/zsh
+g++ play.cc && ./a.out
