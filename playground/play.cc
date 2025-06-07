@@ -7,6 +7,15 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <thread>
+
+using kernel_function = std::function<std::string(uint, uint, uint, float *, float *, float *)>;
+
+std::string run_fun_kernel(uint M, uint N, uint K, float *d_a, float *d_b, float *d_c)
+{
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	return "Fun";
+}
 
 class Gen
 {
@@ -73,22 +82,44 @@ public:
 	void generate_python_script(std::vector<std::tuple<uint, uint, uint> > shapes, std::vector<float> cost_time)
 	{
 		assert(("Shape size should be same as cost_time", shapes.size() == cost_time.size()));
-		generate_numpy_header();
+		generate_numpy_header();	
 	}
 
-	void gen(std::function<void(uint M, uint N, uint K, float *d_a, float *d_b, float *d_c)> kernels)
+	void gen(
+		std::vector<kernel_function> kernels,
+		float *d_a, float *d_b, float *d_c, std::vector<std::tuple<uint, uint, uint>> shapes)
 	{
 		// Timer t;
 		// loop_time.
 		// run kernels
 		const uint loop_time = 5;
 
-		for(auto kernel: kernels)
+		std::vector<float> cost_times;
+
+		// for all shape
+		for(auto shape: shapes)
 		{
-			for(int i = 0; i < loop_time; i ++)
+			// for all kernels.
+			for(auto kernel: kernels)
 			{
+				uint M = std::get<0>(shape);
+				uint N = std::get<1>(shape);
+				uint K = std::get<2>(shape);
+
+				std::string kernel_name = kernel(M, N, K, d_a, d_b, d_c);
+
+				// Timer t;
+				// t.start();
+
+				for(int i = 0; i < loop_time; i ++)
+				{
+					kernel(M, N, K, d_a, d_b, d_c);
+				}
+				// t.stop();
+				cost_times.push_back(0.0f);
 			}
 		}
+		generate_python_script(shapes, cost_times);
 	}
 public:
 	static std::string current_time()
@@ -100,7 +131,7 @@ public:
 	    // Create a string stream to format the time
 	    std::ostringstream oss;
 	    oss << std::put_time(localTime, "%Y-%m-%d-%H:%M:%S");
-	
+
 	    return oss.str();
 	}
 
@@ -127,8 +158,18 @@ int main()
 			{0.3},
 			{0.3},
 		};
+
 	Gen g_cout;
 	std::vector<float> vf = {1.0, 2.0, 3.0};
-	g_cout.generate_python_script(tp, cost_times);
+	std::vector<kernel_function> funs;
+	std::vector<std::tuple<uint, uint, uint>> shapes;
+	uint M = 1, N = 1, K = 1;
+	shapes.push_back({M, N, K});
+	float *a = new float[1];
+	float *b = new float[1];
+	float *c = new float[1];
+	funs.push_back(run_fun_kernel);
+	g_cout.gen(funs,a, b, c, shapes);
+
 	return 0;
 }

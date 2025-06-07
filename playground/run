@@ -1,2 +1,2 @@
-#! /usr/bin/zsh
-g++ play.cc && ./a.out
+#! /bin/zsh
+g++ -std=c++20 play.cc && ./a.out
