@@ -2,7 +2,7 @@
 #define COMPUTE_COMMON_CUH
 
 // Define platform
-#define CUDA
+#define CPU
 
 
 // include header
@@ -12,6 +12,10 @@
 #elif defined(HIP)
 #include <hip/hip_runtime.h>
 #elif defined(CPU)
+#endif
+
+#if defined(CUDA) || defined(HIP)
+#define GPU
 #endif
 
 #include <iostream>
@@ -208,6 +212,7 @@ private:
 namespace utils
 {
 
+#ifdef GPU
 namespace gpu // TODO
 {
 
@@ -272,7 +277,7 @@ void print_half_array_row_major(half *arr, int row, int column)
 #endif
 
 }
-
+#endif // !GPU
 namespace cpu
 {
 template<typename T>

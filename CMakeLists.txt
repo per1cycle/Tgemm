@@ -1,16 +1,21 @@
-cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
-project(Tgemm LANGUAGES C CXX CUDA)
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+project(Tgemm LANGUAGES C CXX)
 
-find_package(CUDA REQUIRED LANGUAGES C CXX CUDA)
+find_package(CUDAToolkit QUIET)
 
-option(S "Sgemm" ON)
-option(H "Sgemm" OFF)
+option(S "Enable SGEMM (CUDA)" ON)
+option(H "Enable HGEMM (CUDA)" OFF)
+option(C "Enable CGEMM (CPU fallback)" ON)
 
-if(CUDA_FOUND)
+find_package(CUDAToolkit QUIET)
+include_directories(${CMAKE_SOURCE_DIR})
+
+if(CUDAToolkit_FOUND)
     # compared to class settings, we let NVidia's FindCUDA CMake detect 
     # whether to build x64.  We tell it to support most devices, though, 
     # to make sure more people can easily run class code without knowing 
     # about this compiler argument
+    enable_language(CUDA)
     set(CUDA_NVCC_FLAGS "
     -ccbin /usr/bin/clang; 
     -gencode;arch=compute_30,code=sm_30;  
@@ -25,7 +30,6 @@ if(CUDA_FOUND)
         target_link_libraries(${TARGET} -lcublas -lcurand)
     endfunction(add_cublas)
 
-    include_directories(${CMAKE_SOURCE_DIR})
     if (UNIX)
     	set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-Xcompiler -Wextra")
     	set(CMAKE_CXX_FLAGS "-stdlib=libstdc++")
@@ -43,6 +47,11 @@ if(CUDA_FOUND)
 		add_subdirectory(hgemm)
 	endif(H)
 
-else(CUDA_FOUND)
+else(CUDAToolkit_FOUND)
     message("CUDA is not installed on this system.")
+
 endif()
+
+if(C)
+    add_subdirectory(cgemm)
+endif(C)

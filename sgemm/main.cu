@@ -2,12 +2,12 @@
 #include <functional>
 #include <common.cuh>
 #include "v1.h"
-#include "v2.h"
 
 using datatype = float;
+using kernel_function = std::function<void(uint, uint, uint, float*, float*, float*)>;
 
 // todo
-std::vector<std::function<void(uint, uint, uint, float*, float*, float*)> functions;
+std::vector<kernel_function> kernels;
 
 int main()
 {
@@ -32,6 +32,7 @@ int main()
     // check if the kernel give correct result.
 
     ///////////////////////////////////////////////////////////////
+    
     Timer t;
     t.start();
     // for(int i = 0; i < loop_time; i ++)
@@ -40,14 +41,6 @@ int main()
     t.report_sgemm_with_loop(M, N, K, alpha, beta, loop_time);
     t.reset();
 
-    t.start();
-    // for(int i = 0; i < loop_time; i ++)
-        run_v2(M, N, K, d_a, d_b, d_c);
-    t.stop();
-    t.report_sgemm_with_loop(M, N, K, alpha, beta, loop_time);
-    t.reset();
-
-    
     ///////////////////////////////////////////////////////////////
 
     cudaFree(h_a);
