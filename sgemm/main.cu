@@ -30,16 +30,24 @@ int main()
     cudaMemcpy(d_b, h_b, sizeof(datatype) * K * N, cudaMemcpyHostToDevice);
     cudaMemcpy(d_c, h_c, sizeof(datatype) * M * N, cudaMemcpyHostToDevice);
     // check if the kernel give correct result.
-
+    kernels.push_back(run_v1);
     ///////////////////////////////////////////////////////////////
     
     Timer t;
-    t.start();
-    // for(int i = 0; i < loop_time; i ++)
-        run_v1(M, N, K, d_a, d_b, d_c);
-    t.stop();
-    t.report_sgemm_with_loop(M, N, K, alpha, beta, loop_time);
-    t.reset();
+    for(int i = 0; i < kernels.size(); i ++)
+    {
+        const auto& kernel = kernels[i];
+        t.start();
+
+        for(int j = 0; j < loop_time; j ++)
+        {
+            kernel(M, N, K, d_a, d_b, d_c);
+        }
+        t.stop();
+        t.report_sgemm_with_loop(M, N, K, alpha, beta, loop_time);
+        t.reset();
+
+    }
 
     ///////////////////////////////////////////////////////////////
 

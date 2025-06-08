@@ -145,14 +145,13 @@ public:
                 << ">> Problem: SGEMM                \t" << std::endl
                 << "Loop time:                       \t" << "[" << loop_time << "]" << std::endl
                 << "Problem size:                    \t" << "M = " << M << ", N = " << N << ", K = " << K << std::endl 
-                << "Flop:                            \t" << flop << std::endl
-                << "mFlop:                           \t" << mflop << std::endl
-                << "gflop:                           \t" << gflop << std::endl
-                << "loop time:                       \t" << loop_time << std::endl
-                << "Time elapse(in second total):    \t" << elapse_in_second() << "s."<< std::endl
-                << "Time elapse(in milisecond total):\t" << elapse_in_milisecond() << "ms." << std::endl
-                << "Time elapse(in second avg):      \t" << elapse_in_second() / f_loop_time << "s."<< std::endl
-                << "Time elapse(in milisecond avg):  \t" << elapse_in_milisecond() / f_loop_time << "ms." << std::endl
+                // << "Flop:                            \t" << flop << std::endl
+                // << "mFlop:                           \t" << mflop << std::endl
+                // << "gflop:                           \t" << gflop << std::endl
+                // << "Time elapse(in second total):    \t" << elapse_in_second() << "s."<< std::endl
+                // << "Time elapse(in milisecond total):\t" << elapse_in_milisecond() << "ms." << std::endl
+                // << "Time elapse(in second avg):      \t" << elapse_in_second() / f_loop_time << "s."<< std::endl
+                // << "Time elapse(in milisecond avg):  \t" << elapse_in_milisecond() / f_loop_time << "ms." << std::endl
                 << "MFlops:                          \t" << mflop / (elapse_in_second() / f_loop_time) << std::endl
                 << "GFlops:                          \t" << gflop / (elapse_in_second() / f_loop_time) << std::endl;
     }
